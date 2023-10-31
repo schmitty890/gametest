@@ -5,7 +5,6 @@ class OverworldEvent {
   }
 
   stand(resolve) {
-    console.log("stand");
     const who = this.map.gameObjects[this.event.who];
     who.startBehavior(
       {
@@ -29,7 +28,6 @@ class OverworldEvent {
   }
 
   walk(resolve) {
-    console.log("walk");
     const who = this.map.gameObjects[this.event.who];
     who.startBehavior(
       {
@@ -50,6 +48,26 @@ class OverworldEvent {
       }
     };
     document.addEventListener("PersonWalkingComplete", completeHandler);
+  }
+
+  textMessage(resolve) {
+    if (this.event.faceHero) {
+      const obj = this.map.gameObjects[this.event.faceHero];
+      obj.direction = utils.oppositeDirection(
+        this.map.gameObjects["hero"].direction
+      );
+    }
+
+    const message = new TextMessage({
+      text: this.event.text,
+      onComplete: () => resolve(),
+    });
+    message.init(document.querySelector(".game-container"));
+  }
+
+  changeMap(resolve) {
+    this.map.overworld.startMap(window.OverworldMaps[this.event.map]);
+    resolve();
   }
 
   init() {
